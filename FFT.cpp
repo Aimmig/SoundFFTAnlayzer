@@ -65,25 +65,61 @@ void FFT::update()
 
 	bin = CArray(sample.data(),bufferSize) ;
 	fft(bin) ;
-	float max = 100000000 ;
-	
+        float max = 100000000 ;
+
 	lines(max) ;
 	bars(max);
 }
+
+Color FFT::ScalarToRGBShort(float f){
+    float a= (1-f)/0.25;
+    int x = std::floor(a);
+    int y = std::floor(255*(a-x));
+    int r,g,b=0;
+    switch(x){
+        case 0: r=255;g=y;b=0;break;
+        case 1: r=255-y;g=255;b=0;break;
+        case 2: r=0;g=255;b=y;break;
+        case 3: r=0;g=255-y;b=255;break;
+        case 4: r=0;g=0;b=255;break;
+    }
+    return Color(r,g,b);
+}
+
+
+Color FFT::ScalarToRGBLong(float f){
+    float a= (1-f)/0.2;
+    int x = std::floor(a);
+    int y = std::floor(255*(a-x));
+    int r,g,b=0;
+    switch(x){
+        case 0: r=255;g=y;b=0;break;
+        case 1: r=255-y;g=255;b=0;break;
+        case 2: r=0;g=255;b=y;break;
+        case 3: r=0;g=255-y;b=255;break;
+        case 4: r=y;g=0;b=255;break;
+        case 5: r=255;g=0;b=255;break;
+    }
+    return Color(r,g,b);
+}
+
 
 void FFT::bars(float const& max)
 {
 	VA2.setPrimitiveType(Lines) ;
 	Vector2f position(0,800) ;
-	for(float i(3) ; i < min(bufferSize/2.f,20000.f) ; i*=1.01)
-	{
-		Vector2f samplePosition(log(i)/log(min(bufferSize/2.f,20000.f)),abs(bin[(int)i])) ;
-		VA2.append(Vertex(position+Vector2f(samplePosition.x*800,-samplePosition.y/max*500),Color::White)) ;
-		VA2.append(Vertex(position+Vector2f(samplePosition.x*800,0),Color::White)) ;
-		VA2.append(Vertex(position+Vector2f(samplePosition.x*800,0),Color(255,255,255,100))) ;
-		VA2.append(Vertex(position+Vector2f(samplePosition.x*800,samplePosition.y/max*500/2.f),Color(255,255,255,0))) ;
-	}
+        for(float i(3) ; i < min(bufferSize/2.f,20000.f) ; i*=1.01)
+        {
+                Vector2f samplePosition(log(i)/log(min(bufferSize/2.f,20000.f)),abs(bin[(int)i])) ;
+
+                VA2.append(Vertex(position+Vector2f(samplePosition.x*800,-samplePosition.y/max*500),ScalarToRGBLong(samplePosition.x)));
+                VA2.append(Vertex(position+Vector2f(samplePosition.x*800,0),ScalarToRGBLong(samplePosition.x)));
+
+                VA2.append(Vertex(position+Vector2f(samplePosition.x*800,0),Color(255,255,255,100))) ;
+                VA2.append(Vertex(position+Vector2f(samplePosition.x*800,samplePosition.y/max*500/2.f),Color(255,255,255,0))) ;
+        }
 }
+
 void FFT::lines(float const& max)
 {
 	VA3.setPrimitiveType(LineStrip) ;

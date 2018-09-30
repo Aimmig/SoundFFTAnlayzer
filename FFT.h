@@ -29,6 +29,9 @@ public:
 
 	void draw(RenderWindow &window) ;
 
+        Color ScalarToRGBShort(float f);
+        Color ScalarToRGBLong(float f);
+
 private:
 	string path ;
 	SoundBuffer buffer ;
