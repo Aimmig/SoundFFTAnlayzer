@@ -27,6 +27,7 @@ public:
 	void bars(float const& max) ;
 	void lines(float const& max) ;
 
+        void prepareCascade();
 	void draw(RenderWindow &window) ;
 
         Color ScalarToRGBShort(float f);
@@ -41,11 +42,19 @@ private:
 	vector<float> window ;
 	CArray bin ;
 
+        const Vector2f position = Vector2f(0,800) ;
+        const int xScale = 800;
+        const int yScale = 500;
+        const int transperency = 35;
+        const float scale = 20000.f;
+        const bool useRGB = true;
+
 	VertexArray VA1 ;
 	VertexArray VA2 ;
 	VertexArray VA3 ;
 	vector<Vertex> cascade ;
-	
+        vector<Color> colorCascade;
+
 	int sampleRate ;
 	int sampleCount ;
 	int bufferSize ;

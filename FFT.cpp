@@ -2,6 +2,10 @@
 
 FFT::FFT(string const& _path,int const& _bufferSize)
 {
+        /*std::vector<std::string> availableDevices = sf::SoundRecorder::getAvailableDevices();
+        for (auto dev: availableDevices){
+            std::cout<<dev<<std::endl;
+        }*/
 	path = _path ;
 	if(!buffer.loadFromFile(path)) cout<<"Unable to load buffer"<<endl ;
 
@@ -37,6 +41,8 @@ void FFT::hammingWindow()
 		}
 	}
 }
+
+//fourier transformation DONT TOUCH THIS!!
 void FFT::fft(CArray &x)
 {
 	const int N = x.size();
@@ -107,39 +113,47 @@ Color FFT::ScalarToRGBLong(float f){
 void FFT::bars(float const& max)
 {
 	VA2.setPrimitiveType(Lines) ;
-	Vector2f position(0,800) ;
-        for(float i(3) ; i < min(bufferSize/2.f,20000.f) ; i*=1.01)
+        for(float i(3) ; i < min(bufferSize/2.f,scale) ; i*=1.01)
         {
-                Vector2f samplePosition(log(i)/log(min(bufferSize/2.f,20000.f)),abs(bin[(int)i])) ;
+                Vector2f samplePosition(log(i)/log(min(bufferSize/2.f,scale)),abs(bin[(int)i])) ;
 
-                VA2.append(Vertex(position+Vector2f(samplePosition.x*800,-samplePosition.y/max*500),ScalarToRGBLong(samplePosition.x)));
-                VA2.append(Vertex(position+Vector2f(samplePosition.x*800,0),ScalarToRGBLong(samplePosition.x)));
+                VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ScalarToRGBLong(samplePosition.x)));
+                VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,0),ScalarToRGBLong(samplePosition.x)));
 
-                VA2.append(Vertex(position+Vector2f(samplePosition.x*800,0),Color(255,255,255,100))) ;
-                VA2.append(Vertex(position+Vector2f(samplePosition.x*800,samplePosition.y/max*500/2.f),Color(255,255,255,0))) ;
+                VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,0),Color(255,255,255,100))) ;
+                VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,samplePosition.y/max*yScale/2.f),Color(255,255,255,0))) ;
         }
+}
+
+void FFT::prepareCascade(){
+    if (useRGB){
+        for(float i(std::max((double)0,cascade.size()-3e5)) ; i < cascade.size() ; i++){
+		cascade[i].position -= Vector2f(-0.8,1) ;
+                if (cascade[i].color.a !=0) cascade[i].color.a = transperency;
+	}
+    }
+    else{
+        for(float i(std::max((double)0,cascade.size()-3e5)) ; i < cascade.size() ; i++){
+                cascade[i].position -= Vector2f(-0.8,1) ;
+		if(cascade[i].color.a != 0) cascade[i].color = Color(255,255,255,transperency);
+	}
+    }
 }
 
 void FFT::lines(float const& max)
 {
 	VA3.setPrimitiveType(LineStrip) ;
-	Vector2f position(0,800) ;
 	Vector2f samplePosition ;
 	float colorDecay = 1 ;
-	
-	for(float i(std::max((double)0,cascade.size()-3e5)) ; i < cascade.size() ; i++)
-	{
-		cascade[i].position -= Vector2f(-0.8,1) ;
-		if(cascade[i].color.a != 0) cascade[i].color = Color(255,255,255,20) ;
-	}
-	samplePosition = Vector2f(log(3)/log(min(bufferSize/2.f,20000.f)),abs(bin[(int)3])) ;
-	cascade.push_back(Vertex(position+Vector2f(samplePosition.x*800,-samplePosition.y/max*500),Color::Transparent)) ;
+        prepareCascade();
+	samplePosition = Vector2f(log(3)/log(min(bufferSize/2.f,scale)),abs(bin[(int)3])) ;
+	cascade.push_back(Vertex(position+Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ScalarToRGBLong(samplePosition.x))) ;
 	for(float i(3) ; i < bufferSize/2.f ; i*=1.02)
 	{
-		samplePosition = Vector2f(log(i)/log(min(bufferSize/2.f,20000.f)),abs(bin[(int)i])) ;
-		cascade.push_back(Vertex(position+Vector2f(samplePosition.x*800,-samplePosition.y/max*500),Color(255,255,255,20))) ;
+		samplePosition = Vector2f(log(i)/log(min(bufferSize/2.f,scale)),abs(bin[(int)i])) ;
+		cascade.push_back(Vertex(position+Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ScalarToRGBLong(samplePosition.x))) ;
 	}
-	cascade.push_back(Vertex(position+Vector2f(samplePosition.x*800,-samplePosition.y/max*500),Color::Transparent)) ;
+	cascade.push_back(Vertex(position+Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ScalarToRGBLong(samplePosition.x))) ;
 
 	VA3.clear() ;
 	for(int i(std::max((double)0,cascade.size()-3e5)) ; i < cascade.size() ; i++) VA3.append(cascade[i]) ;
