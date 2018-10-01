@@ -116,12 +116,12 @@ void FFT::bars(float const& max)
         for(float i(3) ; i < min(bufferSize/2.f,scale) ; i*=1.01)
         {
                 Vector2f samplePosition(log(i)/log(min(bufferSize/2.f,scale)),abs(bin[(int)i])) ;
-
-                VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ScalarToRGBLong(samplePosition.x)));
-                VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,0),ScalarToRGBLong(samplePosition.x)));
-
-                VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,0),Color(255,255,255,100))) ;
-                VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,samplePosition.y/max*yScale/2.f),Color(255,255,255,0))) ;
+                Color rgb = ScalarToRGBLong(samplePosition.x);
+                VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),rgb));
+                VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,0),rgb));
+                VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,0),rgb));
+                rgb.a = 0;
+                VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,samplePosition.y/max*yScale/2.f),rgb)) ;
         }
 }
 
