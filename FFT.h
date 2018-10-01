@@ -43,11 +43,14 @@ private:
 	CArray bin;
 
         const Vector2f position = Vector2f(0,800);
-        const int xScale = 800;
-        const int yScale = 500;
+        const int xScale = 900;
+        const int yScale = 650;
         const int transperency = 35;
         const float scale = 20000.f;
         const bool useRGB = true;
+        
+        const float granularityLines = 1.02;
+        const float granularityBars = 1.005;
 
 	VertexArray VA1;
 	VertexArray VA2;
