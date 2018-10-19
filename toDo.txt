@@ -1,0 +1,8 @@
+1. Install sfmlc bindings
+
+2. compile with compile script
+
+
+TO-DO:
+Seperatate color calc into static class
+Seperatate essential fft from dislpaying stuff

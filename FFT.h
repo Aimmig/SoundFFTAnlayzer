@@ -24,8 +24,10 @@ public:
 	void fft(CArray &x);
 	void update();
 
-	void bars(float const& max);
+	void bars(float const& max, bool monoColor);
 	void lines(float const& max);
+
+        Vector2f getSamplePosition(int index);
 
         void prepareCascade();
 	void draw(RenderWindow &window);
@@ -50,7 +52,7 @@ private:
         const bool useRGB = true;
         
         const float granularityLines = 1.02;
-        const float granularityBars = 1.005;
+        const float granularityBars = 1.01;
 
 	VertexArray VA1;
 	VertexArray VA2;
