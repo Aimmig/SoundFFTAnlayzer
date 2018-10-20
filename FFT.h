@@ -6,6 +6,7 @@
 #include <complex>
 #include <valarray>
 #include <math.h>
+#include "ColorConverter.h"
 
 const double PI = 3.141592653589793238460;
 
@@ -24,6 +25,7 @@ public:
 	void fft(CArray &x);
 	void update();
 
+        void addVerticesToBars(Vector2f samplePosition, Color rgb, float const& max);
 	void bars(float const& max, bool monoColor);
 	void lines(float const& max);
 
@@ -31,9 +33,6 @@ public:
 
         void prepareCascade();
 	void draw(RenderWindow &window);
-
-        Color ScalarToRGBShort(float f);
-        Color ScalarToRGBLong(float f);
 
 private:
 	string path;
