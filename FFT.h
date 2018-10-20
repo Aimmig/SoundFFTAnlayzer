@@ -19,14 +19,14 @@ typedef valarray<Complex> CArray;
 class FFT{
 
 public:
-	FFT(string const& _path,int const& _bufferSize);
+	FFT(string const& _path,int const& _bufferSize, bool rgb, bool mono);
 
 	void hammingWindow();
 	void fft(CArray &x);
 	void update();
 
         void addVerticesToBars(Vector2f samplePosition, Color rgb, float const& max);
-	void bars(float const& max, bool monoColor);
+	void bars(float const& max);
 	void lines(float const& max);
 
         Vector2f getSamplePosition(int index);
@@ -48,7 +48,8 @@ private:
         const int yScale = 650;
         const int transperency = 35;
         const float scale = 20000.f;
-        const bool useRGB = true;
+        bool useRGB;
+        bool monoColor;
         
         const float granularityLines = 1.02;
         const float granularityBars = 1.01;

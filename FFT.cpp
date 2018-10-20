@@ -1,6 +1,6 @@
 #include "FFT.h"
 
-FFT::FFT(string const& _path,int const& _bufferSize){
+FFT::FFT(string const& _path,int const& _bufferSize, bool rgb, bool mono){
 	path = _path ;
 	if(!buffer.loadFromFile(path)) cout<<"Unable to load buffer"<<endl;
 
@@ -23,6 +23,9 @@ FFT::FFT(string const& _path,int const& _bufferSize){
 
 	sample.resize(bufferSize);
 	VA1.resize(bufferSize);
+
+        useRGB = rgb;
+        monoColor = mono;
 }
 
 //create hamming window
@@ -69,7 +72,7 @@ void FFT::update(){
         float max = 100000000;
 
 	lines(max);
-	bars(max, false);
+	bars(max);
 }
 
 //logaritmich x-Scale
@@ -78,7 +81,7 @@ Vector2f FFT::getSamplePosition(int index){
 }
 
 
-void FFT::bars(float const& max, bool monoColor){
+void FFT::bars(float const& max){
 	VA2.setPrimitiveType(Lines);
         
         if (monoColor){

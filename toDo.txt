@@ -4,5 +4,4 @@
 
 
 TO-DO:
-Seperatate color calc into static class
 Seperatate essential fft from dislpaying stuff

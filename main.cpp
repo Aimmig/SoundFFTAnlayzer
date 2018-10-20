@@ -2,33 +2,35 @@
 #include <SFML/Audio.hpp>
 #include "FFT.h"
 
-using namespace std;
 using namespace sf;
 
-int main()
-{
-	RenderWindow window(VideoMode(900,900,32),"Window");
+int main(){
 
-	string path;
-	int bufferSize;
-	cout<<"Put an audio file in the Ressources folder (.wav will work, mp3 wont)"<<endl;
-	cout<<"Enter the file name (example.wav) : ";
-	cin>>path;
-	cout<<"Enter the buffer size treated by the fft (powers of two works best like 16384)"<<endl;
-	cin>>bufferSize;
+        RenderWindow window(VideoMode(900,900,32),"Window");
 
-	FFT fft("Ressources/"+path,bufferSize);
+        string path;
+        int bufferSize;
+        std::cout<<"Put an audio file in the Ressources folder (.wav will work, mp3 wont)"<<std::endl;
+        std::cout<<"Enter the file name (example.wav) : ";
+        std::cin>>path;
+        std::cout<<"Enter the buffer size treated by the fft (powers of two works best like 16384)"<<std::endl;
+        std::cin>>bufferSize;
 
-	Event event;
+        bool useRGB = false;
+        bool monoColor = true;
 
-	while(window.isOpen()){
-		while(window.pollEvent(event)) {}
+        FFT fft("Ressources/"+path,bufferSize,useRGB,monoColor);
 
-		fft.update();
+        Event event;
 
-		window.clear();
-		fft.draw(window);
-		window.display();
-	}
-	return 0;
+        while(window.isOpen()){
+                while(window.pollEvent(event)) {}
+
+                fft.update();
+
+                window.clear();
+                fft.draw(window);
+                window.display();
+        }
+        return 0;
 }
