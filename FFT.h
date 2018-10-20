@@ -10,40 +10,37 @@
 
 const double PI = 3.141592653589793238460;
 
-using namespace std;
-using namespace sf;
-
-typedef complex<double> Complex;
-typedef valarray<Complex> CArray;
+typedef std::complex<double> Complex;
+typedef std::valarray<Complex> CArray;
 
 class FFT{
 
 public:
-	FFT(string const& _path,int const& _bufferSize, bool rgb, bool mono);
+	FFT(std::string const& _path,int const& _bufferSize, bool rgb, bool mono);
 
 	void hammingWindow();
 	void fft(CArray &x);
 	void update();
 
-        void addVerticesToBars(Vector2f samplePosition, Color rgb, float const& max);
+        void addVerticesToBars(sf::Vector2f samplePosition, sf::Color rgb, float const& max);
 	void bars(float const& max);
 	void lines(float const& max);
 
-        Vector2f getSamplePosition(int index);
+        sf::Vector2f getSamplePosition(int index);
 
         void prepareCascade();
-	void draw(RenderWindow &window);
+	void draw(sf::RenderWindow &window);
 
 private:
-	string path;
-	SoundBuffer buffer;
-	Sound sound;
+	std::string path;
+	sf::SoundBuffer buffer;
+	sf::Sound sound;
 
-	vector<Complex> sample;
-	vector<float> window;
+	std::vector<Complex> sample;
+	std::vector<float> window;
 	CArray bin;
 
-        const Vector2f position = Vector2f(0,800);
+        const sf::Vector2f position = sf::Vector2f(0,800);
         const int xScale = 900;
         const int yScale = 650;
         const int transperency = 35;
@@ -54,11 +51,11 @@ private:
         const float granularityLines = 1.02;
         const float granularityBars = 1.01;
 
-	VertexArray VA1;
-	VertexArray VA2;
-	VertexArray VA3;
-	vector<Vertex> cascade;
-        vector<Color> colorCascade;
+	sf::VertexArray VA1;
+	sf::VertexArray VA2;
+	sf::VertexArray VA3;
+	std::vector<sf::Vertex> cascade;
+        std::vector<sf::Color> colorCascade;
 
 	int sampleRate;
 	int sampleCount;

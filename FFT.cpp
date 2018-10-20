@@ -1,16 +1,16 @@
 #include "FFT.h"
 
-FFT::FFT(string const& _path,int const& _bufferSize, bool rgb, bool mono){
+FFT::FFT(std::string const& _path,int const& _bufferSize, bool rgb, bool mono){
 	path = _path ;
-	if(!buffer.loadFromFile(path)) cout<<"Unable to load buffer"<<endl;
+	if(!buffer.loadFromFile(path)) std::cout<<"Unable to load buffer"<<std::endl;
 
 	sound.setBuffer(buffer);
 	sound.setLoop(true);
 	sound.play();
 
-	VA1.setPrimitiveType(LineStrip);
-	VA2.setPrimitiveType(Lines);
-	VA3.setPrimitiveType(LineStrip);
+	VA1.setPrimitiveType(sf::LineStrip);
+	VA2.setPrimitiveType(sf::Lines);
+	VA3.setPrimitiveType(sf::LineStrip);
 
 	sampleRate = buffer.getSampleRate()*buffer.getChannelCount();
 	sampleCount = buffer.getSampleCount();
@@ -36,7 +36,7 @@ void FFT::hammingWindow(){
                         //read buffer into sample Array
 			sample[i-mark] = Complex(buffer.getSamples()[i]*window[i-mark],0);
                         //shows raw audio
-			VA1[i-mark] = Vertex(Vector2f(20,250)+Vector2f((i-mark)/(float)bufferSize*700,sample[i-mark].real()*0.005),Color(255,0,0,50));
+			VA1[i-mark] = sf::Vertex(sf::Vector2f(20,250)+sf::Vector2f((i-mark)/(float)bufferSize*700,sample[i-mark].real()*0.005),sf::Color(255,0,0,50));
 		}
 	}
 }
@@ -46,14 +46,14 @@ void FFT::fft(CArray &x){
 	const int N = x.size();
 	if(N <= 1) return;
 
-	CArray even = x[slice(0,N/2,2)];
-	CArray  odd = x[slice(1,N/2,2)];
+	CArray even = x[std::slice(0,N/2,2)];
+	CArray  odd = x[std::slice(1,N/2,2)];
 
 	fft(even);
 	fft(odd);
 
 	for(int k = 0; k < N/2; k++){
-		Complex t = polar(1.0,-2 * PI * k / N) * odd[k];
+		Complex t = std::polar(1.0,-2 * PI * k / N) * odd[k];
 		x[k] = even[k] + t;
 		x[k+N/2] = even[k] - t;
 	}
@@ -76,77 +76,77 @@ void FFT::update(){
 }
 
 //logaritmich x-Scale
-Vector2f FFT::getSamplePosition(int index){
-    return Vector2f(log(index)/log(min(bufferSize/2.f,scale)),abs(bin[(int)index]));
+sf::Vector2f FFT::getSamplePosition(int index){
+    return sf::Vector2f(log(index)/log(std::min(bufferSize/2.f,scale)),abs(bin[(int)index]));
 }
 
 
 void FFT::bars(float const& max){
-	VA2.setPrimitiveType(Lines);
+	VA2.setPrimitiveType(sf::Lines);
         
         if (monoColor){
             float peakFrequeny = 0;
             float peak = 0;
-            for(float i(3) ; i < min(bufferSize/2.f,scale); i*=granularityBars){
-                Vector2f samplePosition = getSamplePosition(i);
+            for(float i(3) ; i < std::min(bufferSize/2.f,scale); i*=granularityBars){
+                sf::Vector2f samplePosition = getSamplePosition(i);
                 if (samplePosition.y > peak){
                     peakFrequeny = samplePosition.x;
                     peak = samplePosition.y;
                 }
             }
-            Color rgb = ColorConverter::ScalarToRGBLong(peakFrequeny);
-            for(float i(3) ; i < min(bufferSize/2.f,scale); i*=granularityBars){
+            sf::Color rgb = ColorConverter::ScalarToRGBLong(peakFrequeny);
+            for(float i(3) ; i < std::min(bufferSize/2.f,scale); i*=granularityBars){
                 addVerticesToBars(getSamplePosition(i), rgb, max);
             }
         }
         else{
-            for(float i(3) ; i < min(bufferSize/2.f,scale); i*=granularityBars){
-                Vector2f samplePosition = getSamplePosition(i);
+            for(float i(3) ; i < std::min(bufferSize/2.f,scale); i*=granularityBars){
+                sf::Vector2f samplePosition = getSamplePosition(i);
                 addVerticesToBars(samplePosition,ColorConverter::ScalarToRGBLong(samplePosition.x), max);
             }
         }     
 }
 
-void FFT::addVerticesToBars(Vector2f samplePosition, Color rgb, float const& max){
-        VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),rgb));
-        VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,0),rgb));
-        VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,0),rgb));
+void FFT::addVerticesToBars(sf::Vector2f samplePosition, sf::Color rgb, float const& max){
+        VA2.append(sf::Vertex(position+sf::Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),rgb));
+        VA2.append(sf::Vertex(position+sf::Vector2f(samplePosition.x*xScale,0),rgb));
+        VA2.append(sf::Vertex(position+sf::Vector2f(samplePosition.x*xScale,0),rgb));
         rgb.a = 0;
-        VA2.append(Vertex(position+Vector2f(samplePosition.x*xScale,samplePosition.y/max*yScale/2.f),rgb));
+        VA2.append(sf::Vertex(position+sf::Vector2f(samplePosition.x*xScale,samplePosition.y/max*yScale/2.f),rgb));
 }
 
 void FFT::prepareCascade(){
     if (useRGB){
         for(float i(std::max((double)0,cascade.size()-3e5)); i < cascade.size() ; i++){
-		cascade[i].position -= Vector2f(-0.8,1);
+		cascade[i].position -= sf::Vector2f(-0.8,1);
                 if (cascade[i].color.a !=0) cascade[i].color.a = transperency;
 	}
     }
     else{
         for(float i(std::max((double)0,cascade.size()-3e5)); i < cascade.size() ; i++){
-                cascade[i].position -= Vector2f(-0.8,1);
-		if(cascade[i].color.a != 0) cascade[i].color = Color(255,255,255,transperency);
+                cascade[i].position -= sf::Vector2f(-0.8,1);
+		if(cascade[i].color.a != 0) cascade[i].color = sf::Color(255,255,255,transperency);
 	}
     }
 }
 
 void FFT::lines(float const& max){
-	VA3.setPrimitiveType(LineStrip);
-	Vector2f samplePosition;
+	VA3.setPrimitiveType(sf::LineStrip);
+	sf::Vector2f samplePosition;
 	//float colorDecay = 1;
         prepareCascade();
 	samplePosition = getSamplePosition(3);
-	cascade.push_back(Vertex(position+Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ColorConverter::ScalarToRGBLong(samplePosition.x)));
+	cascade.push_back(sf::Vertex(position+sf::Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ColorConverter::ScalarToRGBLong(samplePosition.x)));
 	for(float i(3) ; i < bufferSize/2.f; i*=granularityLines){
 		samplePosition = getSamplePosition(i);
-		cascade.push_back(Vertex(position+Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ColorConverter::ScalarToRGBLong(samplePosition.x)));
+		cascade.push_back(sf::Vertex(position+sf::Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ColorConverter::ScalarToRGBLong(samplePosition.x)));
 	}
-	cascade.push_back(Vertex(position+Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ColorConverter::ScalarToRGBLong(samplePosition.x)));
+	cascade.push_back(sf::Vertex(position+sf::Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ColorConverter::ScalarToRGBLong(samplePosition.x)));
 	VA3.clear();
 	for(int i(std::max((double)0,cascade.size()-3e5)) ; i < cascade.size() ; i++) VA3.append(cascade[i]);
 }
 
-void FFT::draw(RenderWindow &window){
+void FFT::draw(sf::RenderWindow &window){
 	window.draw(VA1);
 	window.draw(VA3);
 	window.draw(VA2);

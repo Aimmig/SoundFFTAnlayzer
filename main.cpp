@@ -2,13 +2,11 @@
 #include <SFML/Audio.hpp>
 #include "FFT.h"
 
-using namespace sf;
-
 int main(){
 
-        RenderWindow window(VideoMode(900,900,32),"Window");
+        sf::RenderWindow window(sf::VideoMode(900,900,32),"Window");
 
-        string path;
+        std::string path;
         int bufferSize;
         std::cout<<"Put an audio file in the Ressources folder (.wav will work, mp3 wont)"<<std::endl;
         std::cout<<"Enter the file name (example.wav) : ";
@@ -16,12 +14,12 @@ int main(){
         std::cout<<"Enter the buffer size treated by the fft (powers of two works best like 16384)"<<std::endl;
         std::cin>>bufferSize;
 
-        bool useRGB = false;
-        bool monoColor = true;
+        bool useRGB = true;
+        bool monoColor = false;
 
         FFT fft("Ressources/"+path,bufferSize,useRGB,monoColor);
 
-        Event event;
+        sf::Event event;
 
         while(window.isOpen()){
                 while(window.pollEvent(event)) {}
