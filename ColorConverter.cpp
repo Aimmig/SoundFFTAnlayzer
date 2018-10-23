@@ -2,14 +2,11 @@
 
 sf::Color ColorConverter::ScalarToRGBShort(float f){
     //fine tuning for cutting off colours outside
-    float min = 0.3;
-    float max = 0.8;
-    float shift = 0.18;
-    f+=shift;
-    if (f<min) return sf::Color(0,0,255);
-    if (f>max) return sf::Color(255,0,0);
+    f+=ColorConverter::SHIFT;
+    if (f<ColorConverter::MIN) return blue;
+    if (f>ColorConverter::MAX) return red;
     //scale to 0-1
-    f = (f-min)/(max-min);
+    f = (f-ColorConverter::MIN)/(ColorConverter::MAX-ColorConverter::MIN);
     float a= (1-f)/0.25;
     int x = std::floor(a);
     int y = std::floor(255*(a-x));
@@ -26,14 +23,11 @@ sf::Color ColorConverter::ScalarToRGBShort(float f){
 
 sf::Color ColorConverter::ScalarToRGBLong(float f){
     //fine tuning for cutting off colours outside
-    float min = 0.25;
-    float max = 0.8;
-    float shift = 0.15;
-    f+=shift;
-    if (f<min) return sf::Color(255,0,255);
-    if (f>max) return sf::Color(255,0,0);
+    f+=ColorConverter::SHIFT;
+    if (f<ColorConverter::MIN) return magenta;
+    if (f>ColorConverter::MAX) return red;
     //scale to 0-1
-    f = (f-min)/(max-min);
+    f = (f-ColorConverter::MIN)/(ColorConverter::MAX-ColorConverter::MIN);
     float a= (1-f)/0.2;
     int x = std::floor(a);
     int y = std::floor(255*(a-x));

@@ -1,5 +1,9 @@
 #include "FFT.h"
 
+float ColorConverter::MIN = 0;
+float ColorConverter::MAX = 0.8;
+float ColorConverter::SHIFT = -0.1;
+
 FFT::FFT(std::string const& _path,int const& _bufferSize, bool rgb, bool mono){
 	path = _path ;
 	if(!buffer.loadFromFile(path)) std::cout<<"Unable to load buffer"<<std::endl;
