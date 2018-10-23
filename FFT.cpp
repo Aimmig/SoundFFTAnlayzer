@@ -98,7 +98,7 @@ void FFT::bars(float const& max){
                     peak = samplePosition.y;
                 }
             }
-            sf::Color rgb = ColorConverter::ScalarToRGBLong(peakFrequeny);
+            sf::Color rgb = ColorConverter::ScalarToRGBShort(peakFrequeny);
             for(float i(3) ; i < std::min(bufferSize/2.f,scale); i*=granularityBars){
                 addVerticesToBars(getSamplePosition(i), rgb, max);
             }
@@ -106,7 +106,7 @@ void FFT::bars(float const& max){
         else{
             for(float i(3) ; i < std::min(bufferSize/2.f,scale); i*=granularityBars){
                 sf::Vector2f samplePosition = getSamplePosition(i);
-                addVerticesToBars(samplePosition,ColorConverter::ScalarToRGBLong(samplePosition.x), max);
+                addVerticesToBars(samplePosition,ColorConverter::ScalarToRGBShort(samplePosition.x), max);
             }
         }     
 }
@@ -140,12 +140,12 @@ void FFT::lines(float const& max){
 	//float colorDecay = 1;
         prepareCascade();
 	samplePosition = getSamplePosition(3);
-	cascade.push_back(sf::Vertex(position+sf::Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ColorConverter::ScalarToRGBLong(samplePosition.x)));
+	cascade.push_back(sf::Vertex(position+sf::Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ColorConverter::ScalarToRGBShort(samplePosition.x)));
 	for(float i(3) ; i < bufferSize/2.f; i*=granularityLines){
 		samplePosition = getSamplePosition(i);
-		cascade.push_back(sf::Vertex(position+sf::Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ColorConverter::ScalarToRGBLong(samplePosition.x)));
+		cascade.push_back(sf::Vertex(position+sf::Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ColorConverter::ScalarToRGBShort(samplePosition.x)));
 	}
-	cascade.push_back(sf::Vertex(position+sf::Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ColorConverter::ScalarToRGBLong(samplePosition.x)));
+	cascade.push_back(sf::Vertex(position+sf::Vector2f(samplePosition.x*xScale,-samplePosition.y/max*yScale),ColorConverter::ScalarToRGBShort(samplePosition.x)));
 	VA3.clear();
 	for(int i(std::max((double)0,cascade.size()-3e5)) ; i < cascade.size() ; i++) VA3.append(cascade[i]);
 }
